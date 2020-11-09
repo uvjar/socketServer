@@ -34,9 +34,9 @@ public class ReceiveSocket extends Thread {
 
     public void schedulerStuff() {
         ScheduledExecutorService scheduledThread = Executors.newSingleThreadScheduledExecutor();
-        Runnable task2 = this::stopGame;
-        //run this task after 5 seconds, nonblock for task3
-        scheduledThread.schedule(task2, 20, TimeUnit.SECONDS);
+        Runnable task = this::stopGame;
+        //stopping game 2 minutes after it's started
+        scheduledThread.schedule(task, 120, TimeUnit.SECONDS);
         System.out.println("moved on..");
     }
 

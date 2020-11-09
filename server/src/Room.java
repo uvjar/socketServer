@@ -8,7 +8,7 @@ public class Room {
     Map<Integer, User> idAndUser = new HashMap<>();
 
     int hostId;
-    int roomId
+    int roomId;
     ArrayList<Integer> players;
     Game game;
     boolean gameOn;
