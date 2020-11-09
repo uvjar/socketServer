@@ -1,4 +1,7 @@
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Room {
 
@@ -21,7 +24,7 @@ public class Room {
     }
 
     public void addPlayer(int userId) {
-        players.add(userId); // todo: 添加重复性检查
+        players.add(userId); // todo:
     }
 
     public void removeUser(int userId) {
@@ -44,6 +47,11 @@ public class Room {
 
 
 
+    public void setRandomHost(int oldHost){
+        Random rand = new Random();
+        players.remove(oldHost);
+        this.hostId = players.get(rand.nextInt(players.size()));
+    }
 
 
 

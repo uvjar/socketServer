@@ -1,5 +1,8 @@
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class ReceiveSocket extends Thread {
 
@@ -11,7 +14,7 @@ public class ReceiveSocket extends Thread {
 
 
 
-    
+
     public ReceiveSocket(Socket sSocket) throws IOException {
         this.sSocket = sSocket;
         this.socketOutStream = sSocket.getOutputStream();
@@ -28,6 +31,21 @@ public class ReceiveSocket extends Thread {
         dout.writeInt(x);dout.writeInt(y);
         System.out.println(this.getName() + "Thread received and return to client:" + x+" "+y);
         dout.flush();
+    }
+    public void schedulerStuff() {
+        ScheduledExecutorService scheduledThread = Executors.newSingleThreadScheduledExecutor();
+        Runnable task2 = this::stopGame;
+        //run this task after 5 seconds, nonblock for task3
+        scheduledThread.schedule(task2 , 20, TimeUnit.SECONDS);
+        System.out.println("moved on..");
+    }
+    public void stopGame() {
+        try{
+        MsgManager.broadcast("STOP",this );
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /** Every time a new sScoket is received, start a new thread*/
@@ -73,6 +91,7 @@ public class ReceiveSocket extends Thread {
                     case 2:
                         System.out.println("Receive command: CREATE ROOM" );
                         Room newRoom = new Room(user.getId());
+
                         RoomManager.addRoom(newRoom);
                         roomIndex = RoomManager.getSize()-1;
                         this.socketOutStream.write(Integer.toString(newRoom.getId()).getBytes());
@@ -95,6 +114,7 @@ public class ReceiveSocket extends Thread {
                                 r.startGame();
                                 String msg="Game Start";
                                 MsgManager.broadcast(msg,this);
+                                schedulerStuff();
                             }
                         }
                         break;
@@ -104,12 +124,20 @@ public class ReceiveSocket extends Thread {
                         System.out.println(this.getName()+" "+ x+" "+y);
                         if(roomIndex>=0){
                             r=RoomManager.getRoomAtIndex(roomIndex);
-                            if(r!=null &&user.getId()==r.getHostId()){
+                            if(r!=null){
                                 r.setPaint(x,y,user.getId());
                                 MsgManager.broadcast(x,y,this);
                             }
                         }
                         break;
+                    case 6:
+                        System.out.println("Receive command: QUIT ROOM" );
+                        if(roomIndex>=0){
+                            r=RoomManager.getRoomAtIndex(roomIndex);
+                            if(r!=null &&user.getId()==r.getHostId()){
+                                r.setRandomHost(user.getId());
+                            }
+                        }
                     case 10086:
                         System.out.println("DEBUG:");
                         RoomManager.printAllRoomInfo();
@@ -120,6 +148,12 @@ public class ReceiveSocket extends Thread {
             //MsgManager.removeBadSocket(this);
 
         } catch (IOException e) {
+            if(roomIndex>=0){
+                Room r=RoomManager.getRoomAtIndex(roomIndex);
+                if(r!=null &&user.getId()==r.getHostId()){
+                    r.setRandomHost(user.getId());
+                }
+            }
             MsgManager.removeBadSocket(this);
             e.printStackTrace();
         }

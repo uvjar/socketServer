@@ -20,5 +20,4 @@ public class User {
     public String getUsername(){return username;}
     public void setColor(int color){colour = color;}
     public int getColor(){return colour;}
-
 }
