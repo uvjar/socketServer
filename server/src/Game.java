@@ -17,9 +17,14 @@ public class Game {
         Arrays.fill(row, 0);
     }}
 
-    public void setPaint(int x,int y,int id){
+    public boolean setPaint(int x,int y,int id){
+        if(board[x][y] != 0)
+            return false;
         board[x][y]=id;
+        return true;
     }
+
+
     public synchronized int[][] getBoard(){
         return board;
     }

@@ -1,7 +1,7 @@
 public class User {
     int id;//
     String username;
-    int colour;
+    int color;
 
 
     public User(){
@@ -9,15 +9,15 @@ public class User {
     	username="";
     }
 
-    User(int _id, String _username, int _colour) {
+    User(int _id, String _username, int _color) {
         id = _id;
         username = _username;
-        colour = _colour;
+        color = _color;
     }
 
     public int getId(){return id;}
     public void setUsername(String _username){username=_username;}
     public String getUsername(){return username;}
-    public void setColor(int color){colour = color;}
-    public int getColor(){return colour;}
+    public void setColor(int color){color = color;}
+    public int getColor(){return color;}
 }
