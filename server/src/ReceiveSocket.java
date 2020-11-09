@@ -9,6 +9,9 @@ public class ReceiveSocket extends Thread {
     private User user;
     private int roomIndex=-1;
 
+
+
+    
     public ReceiveSocket(Socket sSocket) throws IOException {
         this.sSocket = sSocket;
         this.socketOutStream = sSocket.getOutputStream();
